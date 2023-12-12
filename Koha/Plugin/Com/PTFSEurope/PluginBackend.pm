@@ -85,12 +85,6 @@ sub configure {
             }
         }
 
-        use Data::Dumper;
-        $Data::Dumper::Maxdepth = 2;
-        warn Dumper( '##### 1 #######################################################line: ' . __LINE__ );
-        warn Dumper($hashed);
-        warn Dumper('##### end1 #######################################################');
-
         $self->store_data( { pluginbackend_config => scalar encode_json($p) } );
         print $cgi->redirect( -url =>
                 '/cgi-bin/koha/plugins/run.pl?class=Koha::Plugin::Com::PTFSEurope::PluginBackend&method=configure' );

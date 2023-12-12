@@ -7,5 +7,12 @@ Use this project as a guideline:
 * Copy the code from your old Base.pm file into the plugin file named after the plugin.
 * Rename the old backend 'metadata' method to 'backend_metadata'.
 * Rename the old backend 'new' method to 'new_backend'.
-* Add the required plugin methods (new, install, upgrade, uninstall)
+* Add the required plugin methods (new, install, upgrade, uninstall, including $our metadata)
+* Rename the package, example:
+* * package Koha::Illbackends::ReprintsDesk::Base;
+* *    into
+* *  package Koha::Plugin::Com::PTFSEurope::ReprintsDesk;
+* Add the use base line, example:
+* * use base            qw(Koha::Plugins::Base);
+* Add the ill_backend and name methods
 * You should be good to go!
