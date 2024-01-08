@@ -17,14 +17,14 @@ use File::Basename qw( dirname );
 use Koha::Libraries;
 use Koha::Patrons;
 
-our $VERSION = "1.0.0";
+our $VERSION = "2.0.0";
 
 our $metadata = {
     name            => 'PluginBackend',
     author          => 'PTFS-Europe',
     date_authored   => '2023-10-30',
-    date_updated    => '2023-10-04',
-    minimum_version => '23.11.00.000',
+    date_updated    => '2023-01-08',
+    minimum_version => '24.05.00.000',
     maximum_version => undef,
     version         => $VERSION,
     description     => 'This plugin is an ILL backend plugin example'
