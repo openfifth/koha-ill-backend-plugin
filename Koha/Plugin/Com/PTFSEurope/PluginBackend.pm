@@ -6,6 +6,7 @@ use base            qw(Koha::Plugins::Base);
 use Koha::DateUtils qw( dt_from_string );
 
 use File::Basename qw( dirname );
+use C4::Installer;
 use Cwd            qw(abs_path);
 use CGI;
 use JSON qw( encode_json decode_json );
@@ -902,16 +903,41 @@ sub find_illrequestattribute {
 =head3 create_api
 
 Optional method if this backend supports ILL requests batches
-Utilized by I<Koha/REST/V1/Illrequests>
+Utilized by I<Koha/REST/V1/ILL/Requests>
 
 =cut
 
 sub create_api {
-    my ( $self, $body, $request ) = @_;
+    my ( $self, $body, $ill_request ) = @_;
 
-    # logic here
+    my $patron = Koha::Patrons->find( $body->{borrowernumber} );
 
-    return 1;
+    $body->{cardnumber} = $patron->cardnumber;
+
+    foreach my $attr ( @{ $body->{extended_attributes} } ) {
+        $body->{ $attr->{type} } = $attr->{value};
+    }
+
+    $body->{type} = $body->{'isbn'} ? 'book' : 'article';
+
+    my $brw = Koha::Patrons->search( { cardnumber => $body->{'cardnumber'} } )->last;
+
+    # ...Populate Illrequest
+    my $request = $ill_request;
+    $request->borrowernumber( $brw->borrowernumber );
+    $request->branchcode( $body->{branchcode} );
+    $request->status('NEW');
+    $request->backend( $body->{backend} );
+    $request->placed( dt_from_string() );
+    $request->updated( dt_from_string() );
+    $request->batch_id(
+        $body->{ill_batch_id} ? $body->{ill_batch_id} : $body->{batch_id} )
+        if column_exists( 'illrequests', 'batch_id' );
+    $request->store;
+
+    #handle illrequestattributes here
+
+    return $request;
 }
 
 =head3 fieldmap_sorted
