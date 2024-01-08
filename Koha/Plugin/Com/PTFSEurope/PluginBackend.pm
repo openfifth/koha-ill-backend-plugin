@@ -141,7 +141,7 @@ sub uninstall() {
 
 =head3 new_backend
 
-Required method utilized by I<Koha::Illrequest> load_backend
+Required method utilized by I<Koha::ILL::Request> load_backend
 
 =cut
 
@@ -160,7 +160,7 @@ sub new_backend {
 
 =head3 create
 
-Required method utilized by I<Koha::Illrequest> backend_create
+Required method utilized by I<Koha::ILL::Request> backend_create
 
 =cut
 
@@ -271,7 +271,7 @@ sub create {
 
 =head3 cancel
 
-Required method utilized by I<Koha::Illrequest> backend_cancel
+Required method utilized by I<Koha::ILL::Request> backend_cancel
 
 =cut
 
@@ -284,7 +284,7 @@ sub cancel {
 
 =head3 illview
 
-Required method utilized by I<Koha::Illrequest> backend_illview
+Required method utilized by I<Koha::ILL::Request> backend_illview
 
 =cut
 
@@ -473,7 +473,7 @@ sub ready {
     my ( $self, $params ) = @_;
     my $other = $params->{other};
 
-    my $request = Koha::Illrequests->find( $other->{illrequest_id} );
+    my $request = Koha::ILL::Requests->find( $other->{illrequest_id} );
 
     $request->status('READY');
     $request->updated( DateTime->now );
@@ -500,7 +500,7 @@ sub mark_new {
     my ( $self, $params ) = @_;
     my $other = $params->{other};
 
-    my $request = Koha::Illrequests->find( $other->{illrequest_id} );
+    my $request = Koha::ILL::Requests->find( $other->{illrequest_id} );
 
     $request->status('NEW');
     $request->updated( DateTime->now );
@@ -530,7 +530,7 @@ sub migrate {
     my $stage = $other->{stage};
     my $step  = $other->{step};
 
-    my $request = Koha::Illrequests->find( $other->{illrequest_id} );
+    my $request = Koha::ILL::Requests->find( $other->{illrequest_id} );
 
     # Record where we're migrating from, so we can log that
     my $migrating_from = $request->backend;
@@ -716,7 +716,7 @@ sub confirm {
 
 =head3 backend_metadata
 
-Required method utilized by I<Koha::Illrequest> metadata
+Required method utilized by I<Koha::ILL::Request> metadata
 
 =cut
 
