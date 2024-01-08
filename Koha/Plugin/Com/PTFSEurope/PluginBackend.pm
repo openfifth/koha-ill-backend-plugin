@@ -143,6 +143,26 @@ sub uninstall() {
     return 1;
 }
 
+=head2 ILL availability methods
+
+=head3 availability_check_info
+
+Utilized if the AutoILLBackend sys pref is enabled
+Required for bug 35604
+
+=cut
+
+sub availability_check_info {
+    my ( $self, $params ) = @_;
+
+    my $endpoint = '/api/v1/contrib/' . $self->api_namespace . '/ill_backend_availability_pluginbackend?metadata=';
+
+    return {
+        endpoint => $endpoint,
+        name     => $metadata->{name},
+    };
+}
+
 =head2 ILL backend methods
 
 =head3 new_backend
@@ -809,6 +829,8 @@ sub capabilities {
         # This is required for compatibility
         # with Koha versions prior to bug 33716
         should_display_availability => sub { _can_create_request(@_) },
+
+        provides_backend_availability_check => sub { return 1; },
 
         provides_batch_requests => sub { return 1; },
 
