@@ -55,7 +55,7 @@ sub new {
     return $self;
 }
 
-=head3 new
+=head3 configure
 
 Optional I<Koha::Plugin> method if it implements configuration
 
@@ -678,7 +678,7 @@ sub create_illrequestattributes {
                     value    => $att_value,
                     readonly => 0
                 };
-                Koha::Illrequestattribute->new($data)->store;
+                Koha::ILL::Request::Attribute->new($data)->store;
             }
         }
     }
