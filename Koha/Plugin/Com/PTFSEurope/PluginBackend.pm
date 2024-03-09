@@ -159,23 +159,24 @@ sub availability_check_info {
 
 =head2 ILL backend methods
 
-=head3 new_backend
+=head3 new_ill_backend
 
 Required method utilized by I<Koha::ILL::Request> load_backend
 
 =cut
 
-sub new_backend {
-    my ( $class, $params ) = @_;
+sub new_ill_backend {
+    my ( $self, $params ) = @_;
 
-    my $self = {};
+    my $backend = {
+        _logger => $params->{logger},
+        _config => $params->{config},
+        _plugin => $self,
+    };
 
-    $self->{_logger} = $params->{logger} if ( $params->{logger} );
-    $self->{_config} = $params->{config} if ( $params->{config} );
+    bless( $backend, $class );
 
-    bless( $self, $class );
-
-    return $self;
+    return $backend;
 }
 
 =head3 create
