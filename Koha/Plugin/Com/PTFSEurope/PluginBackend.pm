@@ -17,7 +17,7 @@ use File::Basename qw( dirname );
 use Koha::Libraries;
 use Koha::Patrons;
 
-our $VERSION = "2.0.2";
+our $VERSION = "2.0.3";
 
 our $metadata = {
     name            => 'PluginBackend',
