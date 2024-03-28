@@ -174,7 +174,7 @@ sub new_ill_backend {
         _plugin => $self,
     };
 
-    bless( $backend, $class );
+    bless( $backend, $self );
 
     return $backend;
 }
