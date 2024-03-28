@@ -17,7 +17,7 @@ use File::Basename qw( dirname );
 use Koha::Libraries;
 use Koha::Patrons;
 
-our $VERSION = "2.0.3";
+our $VERSION = "2.0.4";
 
 our $metadata = {
     name            => 'PluginBackend',
@@ -168,15 +168,11 @@ Required method utilized by I<Koha::ILL::Request> load_backend
 sub new_ill_backend {
     my ( $self, $params ) = @_;
 
-    my $backend = {
-        _logger => $params->{logger},
-        _config => $params->{config},
-        _plugin => $self,
-    };
+    $self->{_logger} = $params->{logger} if ( $params->{logger} );
+    $self->{_config} = $params->{config} if ( $params->{config} );
+    $self->{_plugin} = $self;
 
-    bless( $backend, $self );
-
-    return $backend;
+    return $self;
 }
 
 =head3 create
