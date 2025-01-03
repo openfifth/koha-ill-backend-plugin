@@ -878,6 +878,15 @@ sub status_graph {
             next_actions   => [],
             ui_method_icon => 'fa-check',
         },
+        MIG => {
+            prev_actions   => [ 'NEW', 'MIG', 'REQREV', 'QUEUED', ],
+            id             => 'MIG',
+            name           => 'Switched provider',
+            ui_method_name => 'Switch provider',
+            method         => 'migrate',
+            next_actions   => [ 'MIG' ],
+            ui_method_icon => 'fa-search',
+        },
         NEW => {
             prev_actions   => [],
             id             => 'NEW',
