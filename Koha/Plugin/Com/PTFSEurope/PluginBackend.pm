@@ -942,8 +942,9 @@ sub create_api {
 
     $body->{cardnumber} = $patron->cardnumber;
 
+    my $extended_attributes;
     foreach my $attr ( @{ $body->{extended_attributes} } ) {
-        $body->{ $attr->{type} } = $attr->{value};
+        $extended_attributes->{ $attr->{type} } = $attr->{value};
     }
 
     $body->{type} = $body->{'isbn'} ? 'book' : 'article';
@@ -963,7 +964,7 @@ sub create_api {
         if column_exists( 'illrequests', 'batch_id' );
     $request->store;
 
-    #handle illrequestattributes here
+    $request->add_or_update_attributes($extended_attributes);
 
     return $request;
 }
