@@ -246,6 +246,20 @@ sub create {
     # Validate form and perform search if valid
     elsif ( $stage eq 'validate' || $stage eq 'form' ) {
 
+        my $unauthenticated_request =
+            C4::Context->preference("ILLOpacUnauthenticatedRequest") && !$other->{'cardnumber'};
+        if ($unauthenticated_request) {
+            my $unauth_request_error = Koha::ILL::Request::unauth_request_data_error($other);
+            if ($unauth_request_error) {
+                $response->{status} = $unauth_request_error;
+                $response->{error}  = 1;
+                $response->{stage}  = 'init';
+                $response->{value}  = $params;
+
+                return $response;
+            }
+        }
+
         if ( _fail( $other->{'branchcode'} ) ) {
 
             # Pass the map of form fields in forms that can be used by TT
@@ -601,10 +615,13 @@ Create a local submission
 sub create_submission {
     my ( $self, $params ) = @_;
 
+    my $unauthenticated_request =
+        C4::Context->preference("ILLOpacUnauthenticatedRequest") && !$params->{other}->{borrowernumber};
+
     my $patron = Koha::Patrons->find( $params->{other}->{borrowernumber} );
 
     my $request = $params->{request};
-    $request->borrowernumber( $patron->borrowernumber );
+    $request->borrowernumber( $patron ? $patron->borrowernumber : undef );
     $request->branchcode( $params->{other}->{branchcode} );
     $request->status('NEW');
     $request->batch_id(
@@ -825,6 +842,8 @@ sub capabilities {
 
         provides_batch_requests => sub { return 1; },
 
+        opac_unauthenticated_ill_requests => sub { return 1; },
+
         # We can create ILL requests with data passed from the API
         create_api => sub { $self->create_api(@_) }
     };
@@ -895,6 +914,15 @@ sub status_graph {
             method         => 'create',
             next_actions   => [ 'GENREQ', 'KILL', 'MIG', 'EDITITEM' ],
             ui_method_icon => 'fa-plus'
+        },
+        UNAUTH => {
+            prev_actions   => [],
+            id             => 'UNAUTH',
+            name           => 'Unauthenticated',
+            ui_method_name => 0,
+            method         => 0,
+            next_actions   => [ 'MIG', 'KILL', 'EDITITEM' ],
+            ui_method_icon => 0,
         },
     };
 }
@@ -1146,6 +1174,30 @@ sub fieldmap {
             ill       => "type",
             exclude   => 1,
             label     => "Type",
+            no_submit => 1,
+            position  => 99
+        },
+        unauthenticated_first_name => {
+            type      => "string",
+            exclude   => 1,
+            label     => "unauthenticated first name",
+            hide      => 1,
+            no_submit => 1,
+            position  => 99
+            },
+        unauthenticated_last_name => {
+            type      => "string",
+            exclude   => 1,
+            label     => "unauthenticated last name",
+            hide      => 1,
+            no_submit => 1,
+            position  => 99
+            },
+        unauthenticated_email => {
+            type      => "string",
+            exclude   => 1,
+            label     => "unauthenticated email",
+            hide      => 1,
             no_submit => 1,
             position  => 99
         },
